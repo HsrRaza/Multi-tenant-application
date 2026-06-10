@@ -2,19 +2,33 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 
+import pool from "./db/db.ts";
+
 dotenv.config();
 
 const app = express();
 
 // middlewares
 app.use(express.json());
-app.use(cors);
+app.use(cors());
 
 
 //routes 
 
 // error handling;
+// testing postgress
 
+app.get("/db", async (req, res)=>{
+    try {
+        // const client = await pool.connect();
+        const result = await pool.query("SELECT current_database()");
+        res.send(result.rows[0].current_database);
+        // client.release();
+    } catch (error) {
+        console.error("Error occurred while querying database:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+})
 
 
 const port = process.env.PORT|| 3000;
