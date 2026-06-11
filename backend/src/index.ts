@@ -3,6 +3,8 @@ import cors from "cors";
 import dotenv from "dotenv";
 
 import pool from "./db/db.ts";
+import errorHandling from "./middleware/errorHandling.js";
+import userRoutes from "./routes/user.route.ts";
 
 dotenv.config();
 
@@ -15,7 +17,13 @@ app.use(cors());
 
 //routes 
 
+app.use("api/", userRoutes)
+
+
 // error handling;
+
+app.use(errorHandling)
+
 // testing postgress
 
 app.get("/db", async (req, res)=>{
