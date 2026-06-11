@@ -1,4 +1,4 @@
-import pool from "../db/db";
+import pool from "../db/db.ts";
 
 export const getAllUsersService = async()=>{
     const result = await pool.query("SELECT * FROM users");

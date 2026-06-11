@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import pool from "./db/db.ts";
 import errorHandling from "./middleware/errorHandling.js";
 import userRoutes from "./routes/user.route.ts";
+import createUserTable from "./data/createUserTable.ts";
 
 dotenv.config();
 
@@ -24,6 +25,10 @@ app.use("api/", userRoutes)
 
 app.use(errorHandling)
 
+
+// create user table before starting the server
+
+createUserTable();
 // testing postgress
 
 app.get("/db", async (req, res)=>{
