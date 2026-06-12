@@ -2,9 +2,11 @@ import pool from "../db/db.ts";
 
 const createOrganizationTable = async () => {
     const queryText = `
-    CREATE TABLE IF NOT EXISTS organizations(
+  CREATE TABLE IF NOT EXISTS organizations (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
+    invite_code VARCHAR(50) UNIQUE NOT NULL,
+    created_by INT REFERENCES users(id),
     created_at TIMESTAMP DEFAULT NOW()
 );
 `;

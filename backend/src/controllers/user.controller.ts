@@ -1,4 +1,4 @@
-import { createUserService, deleteUserService, getAllUsersService, getUserByIdService, updateUserService } from "../models/user.model.ts";
+import { signUpService, deleteUserService, getAllUsersService, getUserByIdService, updateUserService } from "../models/user.model.ts";
 
 // standalised response 
 const handleResponse = (res: any, status: number, message: string, data = null) => {
@@ -9,9 +9,9 @@ const handleResponse = (res: any, status: number, message: string, data = null) 
     })
 }
 export const createuser = async (req: any, res: any, next: any) => {
-    const { name, email } = req.body;
+    const { name, email , password_hash , } = req.body;
     try {
-        const newUser = await createUserService(name, email);
+        const newUser = await signUpService(name, email ,);
         handleResponse(res, 201, "user created successfully", newUser)
     } catch (err) {
         next(err);
