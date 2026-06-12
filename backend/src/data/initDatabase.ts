@@ -1,9 +1,9 @@
-import pool from "../db/db.ts";
-import createOrgMemberTable from "./createOrganizationMemberTable.ts";
-import createOrganizationTable from "./createOrganizationTable.ts";
-import createProjectMemberTable from "./createProjectMemeberTable.ts";
-import createProjectTable from "./createProjectTable.ts";
-import createUserTable from "./createUserTable.ts";
+import pool from "../db/db.js";
+import createOrgMemberTable from "./createOrganizationMemberTable.js";
+import createOrganizationTable from "./createOrganizationTable.js";
+import createProjectMemberTable from "./createProjectMemeberTable.js";
+import createProjectTable from "./createProjectTable.js";
+import createUserTable from "./createUserTable.js";
 
 export async function initDatabase() {
     

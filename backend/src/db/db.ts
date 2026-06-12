@@ -12,9 +12,13 @@ const pool = new Pool({
     password:process.env.DB_PASSWORD,
     port:Number(process.env.DB_PORT)
 })
-pool.on("connect", ()=>{
-    console.log("Connection pool establoshed");
-    
-})
 
+
+pool.on("connect", () => {
+    console.log("Connection pool established");
+});
+
+pool.on("error", (err) => {
+    console.error("Unexpected PG error:", err);
+});
 export default pool

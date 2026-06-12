@@ -4,9 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node src/index.ts",
-    "dev": "nodemon index.ts",
-    "resetdb":"node src/resetDatabase.ts"
+    "dev": "nodemon ",
+    "start": "tsx src/index.ts",
+    "build": "tsc",
+    "prod": "node dist/index.js",
+    "resetdb": "tsx src/resetDatabase.ts"
   },
   "keywords": [],
   "author": "",
@@ -24,7 +26,11 @@
     "@types/cors": "^2.8.19",
     "@types/dotenv": "^6.1.1",
     "@types/express": "^5.0.6",
+    "@types/node": "^25.9.3",
     "@types/pg": "^8.20.0",
-    "nodemon": "^3.1.14"
+    "nodemon": "^3.1.14",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.22.4",
+    "typescript": "^6.0.3"
   }
 }

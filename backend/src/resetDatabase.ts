@@ -1,4 +1,4 @@
-import pool from "./db/db.ts";
+import pool from "./db/db.js";
 
  async function resetDB() {
     
@@ -11,3 +11,4 @@ import pool from "./db/db.ts";
         DROP TABLE IF EXISTS users CASCADE;
         `);
 }
+resetDB()

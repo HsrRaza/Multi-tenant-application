@@ -2,18 +2,23 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 
-import pool from "./db/db.ts";
+import pool from "./db/db.js";
+import userRoutes from "./routes/user.route.js";
+import { initDatabase } from "./data/initDatabase.js";
 import errorHandling from "./middleware/errorHandling.js";
-import userRoutes from "./routes/user.route.ts";
-import { initDatabase } from "./data/initDatabase.ts";
 
 dotenv.config();
 
 const app = express();
 
+
+const port = process.env.PORT || 3000;
+
 // middlewares
 app.use(express.json());
 app.use(cors());
+
+
 
 
 //routes 
@@ -26,31 +31,64 @@ app.use("/api/", userRoutes)
 app.use(errorHandling)
 
 
-// db table 
-await initDatabase();
 
 // testing postgress
 
-app.get("/db", async (req, res)=>{
+app.get("/", (req, res) => {
+    console.log("Home route hit");
+    res.send("API Working");
+});
+
+app.get("/db", async (req, res) => {
     try {
-        // const client = await pool.connect();
-        const result = await pool.query("SELECT current_database()");
+        const client = await pool.connect();
+
+        console.log("Client acquired");
+
+        const result = await client.query(
+            "SELECT current_database()"
+        );
+
+        
+
+        client.release();
+
+        console.log("Client released");
+
         res.send(result.rows[0].current_database);
-        // client.release();
-    } catch (error) {
-        console.error("Error occurred while querying database:", error);
-        res.status(500).json({ error: "Internal Server Error" });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("DB Error");
     }
-})
+});
 
 
-const port = process.env.PORT|| 3000;
 
-app.get("/", (req, res)=>{
-    res.send("hello world");
-})
 
-app.listen(port, ()=>{
-    console.log(`server is runing on ${port}`);
+
+async function start() {
+    console.log("1. Starting app");
+
+    await initDatabase();
+
+    console.log("2. Database initialized");
+
+    const server = app.listen(port, () => {
+        console.log(`3. Server is running on ${port}`);
+    });
+
+    server.on("error", (err) => {
+    console.error("Listen error:", err);
+});
+
+    console.log("4. app.listen called");
+
+    server.on("close", () => {
+        console.log("❌ Server closed");
+    });
+
     
-})
+}
+
+start()
