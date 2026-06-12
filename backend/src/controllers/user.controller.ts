@@ -8,10 +8,11 @@ const handleResponse = (res: any, status: number, message: string, data = null) 
         data
     })
 }
-export const createuser = async (req: any, res: any, next: any) => {
-    const { name, email , password_hash , } = req.body;
+export const signUp = async (req: any, res: any, next: any) => {
+
+    const { name, email , password_hash  } = req.body;
     try {
-        const newUser = await signUpService(name, email ,);
+        const newUser = await signUpService(name, email, password_hash);
         handleResponse(res, 201, "user created successfully", newUser)
     } catch (err) {
         next(err);
