@@ -1,5 +1,6 @@
 import pool from "../db/db.js";
 import bcrypt from "bcrypt"
+import jwt from "jsonwebtoken"
 
 export const getAllUsersService = async () => {
     const result = await pool.query("SELECT * FROM users");
@@ -20,26 +21,85 @@ export const signUpService = async (
 ) => {
 
     try {
-        const hashPassword =await bcrypt.hash(password_hash, 10)
-        
-        const result =  await pool.query("INSERT INTO users (name , email , password_hash) VALUES($1, $2, $3) RETURNING *", [name, email, hashPassword])
+        const hashPassword = await bcrypt.hash(password_hash, 10)
+
+        const result = await pool.query("INSERT INTO users (name , email , password_hash) VALUES($1, $2, $3) RETURNING *", [name, email, hashPassword])
 
         console.log(result.rows);
-        
+
         return result.rows[0]
 
 
-        
+
     } catch (error) {
-         console.error(error)
-         throw error
+        console.error(error)
+        throw error
     }
 
 
 }
-export const loginService = async (email:string , password:string)=>{
+export const loginService = async (email: string, password: string) => {
+    //  find user 
+    const result = await pool.query(
+        ` SELECT * FROM users  WHERE email = &1`, [email]
+    );
+    const user = result.rows[0];
 
-    const unhashedPassword = await bcrypt.compare(password , )
+    if (!user) {
+        throw new Error("Invalid email or password")
+    }
+    // compare passsword
+
+    const isMatch = await bcrypt.compare(
+        password,
+        user.password_hash
+    )
+
+    if (!isMatch) {
+        throw new Error("Invalid email or password")
+    }
+
+    // membership role and user check
+
+    const memberShipResult = await pool.query(
+        `
+        SELECT organizaton_id , role FROM 
+        organization_members
+        WHERE user_id = $1
+         `, [user.id]
+    );
+
+
+    // Accesstoken 
+
+    const accessToken = jwt.sign(
+        {
+            userId: user.id
+        }, process.env.ACCESS_TOKEN_SECRET!,
+        {
+            expiresIn: "15m"
+        }
+    )
+
+    const refreshToken = jwt.sign(
+        {
+            userId: user.id
+        },
+        process.env.REFRESH_TOKEN_SECRET!,
+        {
+            expiresIn: "7d"
+        }
+    )
+
+    return {
+        user: {
+            id: user.id,
+            name: user.name,
+            email: user.email
+        },
+        accessToken,
+        refreshToken
+    }
 }
 
 
