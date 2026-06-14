@@ -10,5 +10,7 @@ import pool from "./db/db.js";
         DROP TABLE IF EXISTS organizations CASCADE;
         DROP TABLE IF EXISTS users CASCADE;
         `);
+        console.log("all dop");
+        
 }
 resetDB()

@@ -1,4 +1,4 @@
-import pool from "../db/db.ts";
+import pool from "../db/db.js";
 import bcrypt from "bcrypt"
 
 export const getAllUsersService = async () => {
@@ -20,17 +20,26 @@ export const signUpService = async (
 ) => {
 
     try {
-        const hashPassword = bcrypt.hash(password_hash, 10)
+        const hashPassword =await bcrypt.hash(password_hash, 10)
         
-        const result = await pool.query("INSERT INTO users (name , email , password_hash , role) VALUES($1, $2, $3)", [name, email, hashPassword])
+        const result =  await pool.query("INSERT INTO users (name , email , password_hash) VALUES($1, $2, $3) RETURNING *", [name, email, hashPassword])
 
+        console.log(result.rows);
+        
         return result.rows[0]
+
+
         
     } catch (error) {
          console.error(error)
+         throw error
     }
 
 
+}
+export const loginService = async (email:string , password:string)=>{
+
+    const unhashedPassword = await bcrypt.compare(password , )
 }
 
 
