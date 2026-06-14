@@ -70,35 +70,9 @@ export const loginService = async (email: string, password: string) => {
     );
 
 
-    // Accesstoken 
-
-    const accessToken = jwt.sign(
-        {
-            userId: user.id
-        }, process.env.ACCESS_TOKEN_SECRET!,
-        {
-            expiresIn: "15m"
-        }
-    )
-
-    const refreshToken = jwt.sign(
-        {
-            userId: user.id
-        },
-        process.env.REFRESH_TOKEN_SECRET!,
-        {
-            expiresIn: "7d"
-        }
-    )
-
     return {
-        user: {
-            id: user.id,
-            name: user.name,
-            email: user.email
-        },
-        accessToken,
-        refreshToken
+        user,
+        membership:memberShipResult.rows[0] || null
     }
 }
 
