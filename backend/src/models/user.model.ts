@@ -76,6 +76,21 @@ export const loginService = async (email: string, password: string) => {
     }
 }
 
+export const logoutService = async (
+    refreshToken: string
+) => {
+
+    await pool.query(
+        `
+        DELETE FROM refresh_tokens
+        WHERE token = $1
+        `,
+        [refreshToken]
+    );
+
+    return true;
+};
+
 
 
 
