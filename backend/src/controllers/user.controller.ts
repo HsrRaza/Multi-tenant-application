@@ -1,6 +1,8 @@
 import { signUpService, deleteUserService, getAllUsersService, getUserByIdService, updateUserService, loginService } from "../models/user.model.js";
 import { generateAccessToken, generateRefreshToken } from "../utils/jwt.js";
 
+import type { Request, Response } from "express";
+
 // standalised response 
 const handleResponse = <T>(res: any, status: number, message: string, data: T) => {
     res.status(status).json({
@@ -56,6 +58,14 @@ export const login = async (req: any, res: any) => {
             refreshToken
         }
     );
+}
+
+export const profile = async(req:Request ,res:Response)=>{
+
+    const user  = req.user
+    res.json({
+        user:user
+    })
 }
 
 export const getAllUsers = async (req: any, res: any, next: any) => {
