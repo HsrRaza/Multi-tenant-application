@@ -2,15 +2,9 @@ import { signUpService, deleteUserService, getAllUsersService, getUserByIdServic
 import { generateAccessToken, generateRefreshToken } from "../utils/jwt.js";
 
 import type { NextFunction, Request, Response } from "express";
+import { handleResponse } from "../utils/standardRes.js";
 
-// standalised response 
-const handleResponse = <T>(res: any, status: number, message: string, data: T) => {
-    res.status(status).json({
-        status,
-        message,
-        data
-    })
-}
+
 export const signUp = async (req: any, res: any, next: any) => {
 
     const { name, email, password_hash } = req.body;
