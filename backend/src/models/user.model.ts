@@ -77,15 +77,17 @@ export const loginService = async (email: string, password: string) => {
 }
 
 export const logoutService = async (
+    userId:number,
     refreshToken: string
 ) => {
 
     await pool.query(
         `
         DELETE FROM refresh_tokens
-        WHERE token = $1
+        WHERE user_id  = $1
+        and token = $2
         `,
-        [refreshToken]
+        [userId , refreshToken]
     );
 
     return true;

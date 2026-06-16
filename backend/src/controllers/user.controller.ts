@@ -1,7 +1,7 @@
-import { signUpService, deleteUserService, getAllUsersService, getUserByIdService, updateUserService, loginService } from "../models/user.model.js";
+import { signUpService, deleteUserService, getAllUsersService, getUserByIdService, updateUserService, loginService, logoutService } from "../models/user.model.js";
 import { generateAccessToken, generateRefreshToken } from "../utils/jwt.js";
 
-import type { Request, Response } from "express";
+import type { NextFunction, Request, Response } from "express";
 
 // standalised response 
 const handleResponse = <T>(res: any, status: number, message: string, data: T) => {
@@ -68,55 +68,33 @@ export const profile = async(req:Request ,res:Response)=>{
     })
 }
 
-export const getAllUsers = async (req: any, res: any, next: any) => {
-    try {
-        const users: any = await getAllUsersService();
-        handleResponse(res, 200, "users retrieved successfully", users)
-    } catch (err) {
-        next(err);
-    }
-}
 
-
-export const getUserById = async (req: any, res: any, next: any) => {
+export const logout = async(req:Request , res:Response , next:NextFunction)=>{
+    
     try {
-        const user: any = await getUserByIdService(req.params.id);
-        if (!user) {
-            return handleResponse(res, 404, "user not found", null);
+
+        const userId = req.user!.id;
+        const { refreshToken } = req.body;
+
+        if (!refreshToken) {
+            return res.status(400).json({
+                status: 400,
+                message: "Refresh token required"
+            });
         }
-        handleResponse(res, 200, "users retrieved successfully", user)
-    } catch (err) {
-        next(err);
+
+        await logoutService(userId , refreshToken);
+
+        handleResponse(
+            res,
+            200,
+            "Logout successful",
+            null
+        );
+
+    } catch (error) {
+
+        next(error);
+
     }
 }
-export const updateUser = async (req: any, res: any, next: any) => {
-
-    const { name, email } = req.body;
-
-    try {
-        const updatedUser: any = await updateUserService(req.params.id, name, email);
-
-        if (!updatedUser) {
-            return handleResponse(res, 404, "user not found", null);
-        }
-        handleResponse(res, 200, "user updated  successfully", updatedUser)
-    } catch (err) {
-        next(err);
-    }
-}
-
-export const deleteUser = async (req: any, res: any, next: any) => {
-
-
-    try {
-        const deletedUser: any = await deleteUserService(req.params.id);
-
-        if (!deletedUser) {
-            return handleResponse(res, 404, "user not found", null);
-        }
-        handleResponse(res, 200, "user deleted  successfully", deletedUser)
-    } catch (err) {
-        next(err);
-    }
-}
-
