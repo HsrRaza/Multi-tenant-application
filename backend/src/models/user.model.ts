@@ -94,17 +94,31 @@ export const logoutService = async (
 };
 
 
+export const refreshTokenService = async (
+    refreshToken: string
+) => {
 
+    const tokenResult = await pool.query(
+        `
+        SELECT *
+        FROM refresh_tokens
+        WHERE token = $1
+        `,
+        [refreshToken]
+    );
 
-export const updateUserService = async (id: number, name: string, email: string) => {
-    const result = await pool.query("UPDATE users SET name = $1, email=$2 WHERE id = $3 RETURNING *", [name, email, id]);
-    return result.rows[0];
-}
+    if (!tokenResult.rows.length) {
+        throw new Error(
+            "Invalid refresh token"
+        );
+    }
 
+    const decoded = jwt.verify(
+        refreshToken,
+        process.env.REFRESH_TOKEN_SECRET!
+    ) as {
+        userId: number;
+    };
 
-
-
-export const deleteUserService = async (id: number) => {
-    const result = await pool.query("DELETE FROM users WHERE id = $1 RETURNING *", [id]);
-    return result.rows[0];
-}
+    return decoded;
+};

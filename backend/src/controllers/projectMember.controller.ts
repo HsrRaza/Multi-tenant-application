@@ -1,5 +1,5 @@
 import type { NextFunction, Request, Response } from "express";
-import { assignMemberToProjectService, removeMemberFromProjectService } from "../models/projectMember.model.js";
+import { assignMemberToProjectService,  getProjectWithMembersService,  removeMemberFromProjectService } from "../models/projectMember.model.js";
 import { handleResponse } from "../utils/standardRes.js";
 
 export const assignMemberToProject = async (
@@ -13,12 +13,17 @@ export const assignMemberToProject = async (
         const projectId =
             Number(req.params.projectId);
 
-        const { userId } = req.body;
+        const { userId } =
+            req.body;
+
+        const organizationId =
+            req.user!.organizationId!;
 
         const result =
             await assignMemberToProjectService(
                 projectId,
-                userId
+                userId,
+                organizationId
             );
 
         handleResponse(
@@ -29,9 +34,7 @@ export const assignMemberToProject = async (
         );
 
     } catch (error) {
-
         next(error);
-
     }
 };
 
@@ -50,10 +53,14 @@ export const removeMemberFromProject = async (
         const userId =
             Number(req.params.userId);
 
+        const organizationId =
+            req.user!.organizationId!;
+
         const result =
             await removeMemberFromProjectService(
                 projectId,
-                userId
+                userId,
+                organizationId
             );
 
         handleResponse(
@@ -64,9 +71,38 @@ export const removeMemberFromProject = async (
         );
 
     } catch (error) {
+        next(error);
+    }
+};
+
+
+
+export const getProjectMembers = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+
+    try {
+
+        const projectId =
+            Number(req.params.projectId);
+
+        const members =
+            await getProjectWithMembersService(
+                projectId
+            );
+
+        handleResponse(
+            res,
+            200,
+            "Project members fetched successfully",
+            members
+        );
+
+    } catch (error) {
 
         next(error);
-
     }
 };
 

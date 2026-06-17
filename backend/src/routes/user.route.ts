@@ -1,11 +1,15 @@
 import express from "express"
-import { signUp, deleteUser,  getUserById, updateUser, login, profile } from "../controllers/user.controller.js";
+import { signUp,  login, profile, refreshToken } from "../controllers/user.controller.js";
 import { authenticate } from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 
-router.post("/sign", signUp);
-router.post("/login", login);
-router.get("/profile", authenticate , profile)
+router.post("/auth/sign", signUp);
+router.post("/auth/login", login);
+router.get("/auth/profile", authenticate , profile)
+router.post(
+    "/auth/refresh",
+    refreshToken
+);
 
 export default router;

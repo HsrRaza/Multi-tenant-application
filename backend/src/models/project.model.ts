@@ -92,3 +92,53 @@ export const getProjectByIdService = async (
 
     return result.rows[0];
 };
+
+export const updateProjectService = async (
+    projectId: number,
+    organizationId: number,
+    name: string,
+    description: string
+) => {
+
+    const result = await pool.query(
+        `
+        UPDATE projects
+        SET
+            name = $1,
+            description = $2
+        WHERE id = $3
+        AND organization_id = $4
+        RETURNING *
+        `,
+        [
+            name,
+            description,
+            projectId,
+            organizationId
+        ]
+    );
+
+    return result.rows[0];
+};
+
+
+export const deleteProjectService = async (
+    projectId: number,
+    organizationId: number
+) => {
+
+    const result = await pool.query(
+        `
+        DELETE FROM projects
+        WHERE id = $1
+        AND organization_id = $2
+        RETURNING *
+        `,
+        [
+            projectId,
+            organizationId
+        ]
+    );
+
+    return result.rows[0];
+};

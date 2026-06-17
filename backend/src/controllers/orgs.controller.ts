@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 import { handleResponse } from "../utils/standardRes.js";
-import { getMyOrganizationService, getOrganizationMembersService, joinOrganizationService } from "../models/orgs.model.js";
+import { getMyOrganizationService, getOrganizationMembersService, joinOrganizationService, leaveOrganizationService } from "../models/orgs.model.js";
 
 export const createOrganization = async(req:Request, res:Response)=>{
         const {name} =req.body;
@@ -104,6 +104,32 @@ export const getOrganizationMembers = async (
             200,
             "Organization members fetched successfully",
             members
+        );
+
+    } catch (error) {
+
+        next(error);
+
+    }
+};
+export const leaveOrganization = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+
+    try {
+
+        const result =
+            await leaveOrganizationService(
+                req.user!.userId
+            );
+
+        handleResponse(
+            res,
+            200,
+            "Organization left successfully",
+            result
         );
 
     } catch (error) {

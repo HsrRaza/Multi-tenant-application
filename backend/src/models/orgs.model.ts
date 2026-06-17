@@ -107,8 +107,7 @@ export const getMyOrganizationService = async(userId:number)=>{
     return result.rows;
 }
 
-export const getOrganizationMembersService =
-async (organizationId: number) => {
+export const getOrganizationMembersService =async (organizationId: number) => {
 
     const result = await pool.query(
         `
@@ -126,4 +125,57 @@ async (organizationId: number) => {
     );
 
     return result.rows;
+};
+
+
+export const leaveOrganizationService = async (
+    userId: number
+) => {
+
+    const membershipResult = await pool.query(
+        `
+        SELECT *
+        FROM organization_members
+        WHERE user_id = $1
+        `,
+        [userId]
+    );
+
+    const membership = membershipResult.rows[0];
+
+    if (!membership) {
+        throw new Error("Organization not found");
+    }
+
+    // admin validation...
+
+    await pool.query(
+        `
+        DELETE FROM project_members pm
+        USING projects p
+        WHERE pm.project_id = p.id
+        AND pm.user_id = $1
+        AND p.organization_id = $2
+        `,
+        [
+            userId,
+            membership.organization_id
+        ]
+    );
+
+    await pool.query(
+        `
+        DELETE FROM organization_members
+        WHERE user_id = $1
+        AND organization_id = $2
+        `,
+        [
+            userId,
+            membership.organization_id
+        ]
+    );
+
+    return {
+        success: true
+    };
 };

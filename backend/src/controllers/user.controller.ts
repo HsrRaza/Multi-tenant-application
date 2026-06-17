@@ -1,8 +1,9 @@
-import { signUpService, deleteUserService, getAllUsersService, getUserByIdService, updateUserService, loginService, logoutService } from "../models/user.model.js";
+import { signUpService,   loginService, logoutService, refreshTokenService } from "../models/user.model.js";
 import { generateAccessToken, generateRefreshToken } from "../utils/jwt.js";
 
 import type { NextFunction, Request, Response } from "express";
 import { handleResponse } from "../utils/standardRes.js";
+import pool from "../db/db.js";
 
 
 export const signUp = async (req: any, res: any, next: any) => {
@@ -92,3 +93,63 @@ export const logout = async(req:Request , res:Response , next:NextFunction)=>{
 
     }
 }
+export const refreshToken = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+
+    try {
+
+        const { refreshToken } =
+            req.body;
+
+        const decoded =
+            await refreshTokenService(
+                refreshToken
+            );
+
+        const userResult =
+            await pool.query(
+                `
+                SELECT u.id,
+                       u.email,
+                       om.organization_id,
+                       om.role
+                FROM users u
+                LEFT JOIN organization_members om
+                    ON om.user_id = u.id
+                WHERE u.id = $1
+                `,
+                [decoded.userId]
+            );
+
+        const user =
+            userResult.rows[0];
+
+        const accessToken =
+            generateAccessToken({
+                userId: user.id,
+                email: user.email,
+                organizationId:
+                    user.organization_id,
+                role: user.role
+            });
+
+        handleResponse(
+            res,
+            200,
+            "Token refreshed successfully",
+            {
+                accessToken
+            }
+        );
+
+    } catch (error) {
+
+        next(error);
+
+    }
+};
+
+

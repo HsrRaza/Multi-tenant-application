@@ -4,7 +4,7 @@ import express from "express";
 
 import { authenticate }
 from "../middleware/auth.middleware.js";
-import { createOrganization, getMyOrganization, getOrganizationMembers, joinOrganization } from "../controllers/orgs.controller.js";
+import { createOrganization, getMyOrganization, getOrganizationMembers, joinOrganization, leaveOrganization } from "../controllers/orgs.controller.js";
 
 const router = express.Router();
 
@@ -32,4 +32,9 @@ router.get(
     getOrganizationMembers
 );
 
+router.delete(
+    "/organizations/leave",
+    authenticate,
+    leaveOrganization
+);
 export default router;
