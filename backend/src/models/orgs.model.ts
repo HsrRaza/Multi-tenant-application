@@ -52,7 +52,7 @@ export const createOrganizationService = async(userId: number, name:string)=>{
 
 }
 
-export const joinOrganization = async( userId: number, inviteCode:string)=>{
+export const joinOrganizationService = async( userId: number, inviteCode:string)=>{
 
     const orgsResult = await pool.query(
         `
@@ -95,7 +95,7 @@ export const joinOrganization = async( userId: number, inviteCode:string)=>{
     
 }
 
-export const getOrganization = async(userId:number)=>{
+export const getMyOrganizationService = async(userId:number)=>{
     const result = await pool.query(
         `
         SELECT o.id, o.name , o.invite_code ,om.role FROM organization o JOIN organization_member om ON o.id = om.organization_id
