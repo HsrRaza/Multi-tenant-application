@@ -77,3 +77,18 @@ export const getProjectsService = async (
     return result.rows;
 };
 
+export const getProjectByIdService = async (
+    projectId: number
+) => {
+
+    const result = await pool.query(
+        `
+        SELECT *
+        FROM projects
+        WHERE id = $1
+        `,
+        [projectId]
+    );
+
+    return result.rows[0];
+};

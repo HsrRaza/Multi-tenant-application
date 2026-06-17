@@ -20,3 +20,22 @@ export const assignMemberToProjectService = async (
     return result.rows[0];
 };
 
+
+export const removeMemberFromProjectService = async (
+    projectId: number,
+    userId: number
+) => {
+
+    const result = await pool.query(
+        `
+        DELETE FROM project_members
+        WHERE project_id = $1
+        AND user_id = $2
+        RETURNING *
+        `,
+        [projectId, userId]
+    );
+
+    return result.rows[0];
+};
+

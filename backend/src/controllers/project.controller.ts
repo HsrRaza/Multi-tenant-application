@@ -1,5 +1,5 @@
 import type { Request,Response, NextFunction } from "express";
-import { createProjectService, getProjectsService } from "../models/project.model.js";
+import { createProjectService, getProjectByIdService, getProjectsService } from "../models/project.model.js";
 import { handleResponse } from "../utils/standardRes.js";
 
 export const createProject = async (
@@ -59,4 +59,37 @@ export const getProjects = async (
 
     }
 };
+
+
+
+export const getProjectById = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+
+    try {
+
+        const projectId =
+            Number(req.params.projectId);
+
+        const project =
+            await getProjectByIdService(
+                projectId
+            );
+
+        handleResponse(
+            res,
+            200,
+            "Project fetched successfully",
+            project
+        );
+
+    } catch (error) {
+
+        next(error);
+
+    }
+};
+
 

@@ -1,6 +1,7 @@
 import express from "express"
 import { authenticate } from "../middleware/auth.middleware.js";
-import { createProject, getProjects } from "../controllers/project.controller.js";
+import { createProject, getProjectById, getProjects } from "../controllers/project.controller.js";
+import { canAccessProject } from "../middleware/canAccessProject.middleware.js";
 
 const router  = express.Router()
 
@@ -11,7 +12,14 @@ router.post(
 );
 
 router.get(
-    "/projects",
+    "/projects/my",
     authenticate,
     getProjects
+);
+
+router.get(
+    "/projects/:projectId",
+    authenticate,
+    canAccessProject,
+    getProjectById
 );
