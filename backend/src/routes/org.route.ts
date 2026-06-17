@@ -5,3 +5,4 @@ import { createOrganization } from "../controllers/orgs.controller.js";
 const router = express.Router();
 
 router.post("/orgs",authenticate, createOrganization )
+router.post("/orgs/join", authenticate , )
