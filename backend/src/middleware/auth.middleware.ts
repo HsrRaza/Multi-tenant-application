@@ -28,7 +28,7 @@ export const authenticate= (req:Request, res:Response, next:NextFunction)=>{
             process.env.ACCESS_TOKEN_SECRET!
         );
 
-          req.user = decoded
+        req.user = (decoded as any).payload || decoded;
         next();
 
 

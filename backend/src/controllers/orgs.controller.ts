@@ -1,18 +1,19 @@
 import type { NextFunction, Request, Response } from "express";
 import { handleResponse } from "../utils/standardRes.js";
-import { getMyOrganizationService, getOrganizationMembersService, joinOrganizationService, leaveOrganizationService } from "../models/orgs.model.js";
+import { createOrganizationService, getMyOrganizationService, getOrganizationMembersService, joinOrganizationService, leaveOrganizationService } from "../models/orgs.model.js";
 
-export const createOrganization = async(req:Request, res:Response)=>{
+export const createOrganization = async(req:Request, res:Response, next:NextFunction)=>{
         const {name} =req.body;
+        try {
+            const organization = await createOrganizationService(
+                req.user.userId,
+                name
+            )
 
-        const organization = await createOrganization(
-            req.user.userId,
-            name
-        )
-
-        handleResponse(res, 200 ,"Organization created successfully", organization)
-        
-     
+            handleResponse(res, 200 ,"Organization created successfully", organization)
+        } catch (error) {
+            next(error);
+        }
  }
 
  export const joinOrganization = async (

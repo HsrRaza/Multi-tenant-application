@@ -56,7 +56,7 @@ export const joinOrganizationService = async( userId: number, inviteCode:string)
 
     const orgsResult = await pool.query(
         `
-        SELECT * FROM organization WHERE invite_code  = $1
+        SELECT * FROM organizations WHERE invite_code  = $1
         `, [inviteCode]
     )
 
@@ -84,7 +84,7 @@ export const joinOrganizationService = async( userId: number, inviteCode:string)
             user_id,
             role
             )
-            VALUES ($1 , $2 , 'memeber')
+            VALUES ($1 , $2 , 'member')
             `, [organization.id , userId]
         
         
@@ -98,7 +98,7 @@ export const joinOrganizationService = async( userId: number, inviteCode:string)
 export const getMyOrganizationService = async(userId:number)=>{
     const result = await pool.query(
         `
-        SELECT o.id, o.name , o.invite_code ,om.role FROM organization o JOIN organization_member om ON o.id = om.organization_id
+        SELECT o.id, o.name , o.invite_code ,om.role FROM organizations o JOIN organization_members om ON o.id = om.organization_id
         WHERE om.user_id =$1
         
         `,[userId]

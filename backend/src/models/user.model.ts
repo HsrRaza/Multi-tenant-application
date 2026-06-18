@@ -41,7 +41,7 @@ export const signUpService = async (
 export const loginService = async (email: string, password: string) => {
     //  find user 
     const result = await pool.query(
-        ` SELECT * FROM users  WHERE email = &1`, [email]
+        ` SELECT * FROM users  WHERE email = $1`, [email]
     );
     const user = result.rows[0];
 
@@ -63,7 +63,7 @@ export const loginService = async (email: string, password: string) => {
 
     const memberShipResult = await pool.query(
         `
-        SELECT organizaton_id , role FROM 
+        SELECT organization_id , role FROM 
         organization_members
         WHERE user_id = $1
          `, [user.id]
@@ -76,6 +76,16 @@ export const loginService = async (email: string, password: string) => {
     }
 }
 
+export const updateRefreshTokenService = async (
+    userId: number,
+    refreshToken: string | null
+) => {
+    await pool.query(
+        "UPDATE users SET refreshtoken = $1 WHERE id = $2",
+        [refreshToken, userId]
+    );
+};
+
 export const logoutService = async (
     userId:number,
     refreshToken: string
@@ -83,9 +93,10 @@ export const logoutService = async (
 
     await pool.query(
         `
-        DELETE FROM refresh_tokens
-        WHERE user_id  = $1
-        and token = $2
+        UPDATE users
+        SET refreshtoken = NULL
+        WHERE id = $1
+        and refreshtoken = $2
         `,
         [userId , refreshToken]
     );
@@ -100,9 +111,9 @@ export const refreshTokenService = async (
 
     const tokenResult = await pool.query(
         `
-        SELECT *
-        FROM refresh_tokens
-        WHERE token = $1
+        SELECT id
+        FROM users
+        WHERE refreshtoken = $1
         `,
         [refreshToken]
     );
@@ -116,9 +127,7 @@ export const refreshTokenService = async (
     const decoded = jwt.verify(
         refreshToken,
         process.env.REFRESH_TOKEN_SECRET!
-    ) as {
-        userId: number;
-    };
+    ) as any;
 
-    return decoded;
+    return decoded.payload || decoded;
 };

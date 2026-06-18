@@ -39,3 +39,5 @@ router.delete(
     authorize(["admin"]),
     deleteProject
 );
+
+export default router;

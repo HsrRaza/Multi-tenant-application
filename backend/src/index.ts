@@ -4,6 +4,10 @@ import dotenv from "dotenv";
 
 import pool from "./db/db.js";
 import userRoutes from "./routes/user.route.js";
+import orgRoutes from "./routes/org.route.js";
+import projectRoutes from "./routes/projectt.route.js";
+import projectMemberRoutes from "./routes/projectMember.route.js";
+import dashboardRoutes from "./routes/dashboard.route.js";
 import { initDatabase } from "./data/initDatabase.js";
 import errorHandling from "./middleware/errorHandling.js";
 
@@ -24,6 +28,10 @@ app.use(cors());
 //routes 
 
 app.use("/api/", userRoutes)
+app.use("/api/", orgRoutes)
+app.use("/api/", projectRoutes)
+app.use("/api/", projectMemberRoutes)
+app.use("/api/", dashboardRoutes)
 
 
 // error handling;

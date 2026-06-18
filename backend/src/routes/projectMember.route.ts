@@ -27,3 +27,4 @@ router.get(
     getProjectMembers
 );
 
+export default router;

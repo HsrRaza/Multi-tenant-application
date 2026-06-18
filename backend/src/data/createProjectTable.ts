@@ -1,4 +1,4 @@
-import pool from "../db/db.ts";
+import pool from "../db/db.js";
 
 const createProjectTable = async ()=>{
     const queryText= `

@@ -1,4 +1,6 @@
-const errorHandling= (err ,req , res, next)=>{
+import type { Request, Response, NextFunction } from "express";
+
+const errorHandling = (err: any, req: Request, res: Response, next: NextFunction) => {
   console.log(err.stack);
   res.status(500).json({
     sucess:false,
