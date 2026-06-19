@@ -23,6 +23,7 @@ export const ProjectsPage: React.FC = () => {
   const [deletingProjectId, setDeletingProjectId] = useState<number | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
+  const { data: projects, isLoading } = useProjectsQuery(true);
 
   const handleDeleteConfirm = async () => {
     if (deletingProjectId === null) return;
