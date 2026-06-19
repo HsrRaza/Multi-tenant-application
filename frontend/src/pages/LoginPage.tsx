@@ -7,6 +7,10 @@ import Button from '../components/common/Button';
 import AnimatedPage from '../components/common/AnimatedPage';
 import { Building, ShieldAlert } from 'lucide-react';
 
+const loginSchema = z.object({
+  email: z.string().email('Invalid email address'),
+  password: z.string().min(6, 'Password must be at least 6 characters'),
+});
 
 export const LoginPage: React.FC = () => {
   const { login } = useAuth();
