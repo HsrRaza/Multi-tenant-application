@@ -15,13 +15,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   const { isAuthenticated, hasOrganization, loading } = useAuth();
   const location = useLocation();
 
-  if (loading) {
-    return (
-      <div className="flex h-screen w-screen items-center justify-center bg-brand-bg">
-        <Loader size="large" />
-      </div>
-    );
-  }
+  
 
   if (!isAuthenticated) {
     return <Navigate to="/login" state={{ from: location }} replace />;
